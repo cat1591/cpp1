@@ -1,69 +1,72 @@
-// ### 题目描述
-// 编写一个程序，用户输入一段英文句子，程序需要统计并输出以下信息： <br/>
-
-// 句子中单词的总数。 <br/>
-// 句子中最长单词及其长度。 <br/>
-// 句子中每个单词的长度，并按照单词长度进行排序后输出。 <br/>
 #include <iostream>
 #include <string>
 using namespace std;
 
 int main()
 {
-    //1.单词的总数
     string sentence;
-    cout<<"请输入一段英文句子"<<endl;
-    cin>>sentence;
-    int j=1;
-    for(int i=0;i<sentence.length();i++)
-
+    cout << "请输入一段英文句子: ";
+    getline(cin, sentence);  // 使用getline读取整行，包括空格
+    
+    // 1. 单词的总数
+    int j = 0;  // 从0开始计数
+    string current = "";
+    
+    // 先统计单词总数
+    for(int i = 0; i <= sentence.length(); i++)
     {
-        while(sentence[i]==' ')
+        if(i == sentence.length() || sentence[i] == ' ')
         {
-            j+=1;
-        }
-        cout<<"单词的总数为"<<j<<endl;
-        
-
-    }
-    //2.最长单词
-    string longest ="";
-    string current =""; 
-    for (int i = 0; i <= sentence.length(); i++)
-        {
-            if (i == sentence.length() || sentence[i] ==' ')
+            if(current != "")  // 确保不是空单词
             {
-                if (current.length() > longest.length())
-                {
-                    //若当前单词长度大于之前的最长单词，则将最大值赋值为该单词
-                    longest = current;
-                }
+                j++;  // 单词计数
                 current = "";
-            }     
-            else 
-            {
-                current += sentence[i];//字符串连接
             }
         }
-    cout<<"最长的单词为"<<longest<<endl;
-    //3.每个单词长度，按序输出
-    cout << "所有单词及其长度:" << endl;
-    current = "";
+        else
+        {
+            current += sentence[i];
+        }
+    }
+    cout << "单词的总数为: " << j << endl;
 
-    int k=0;
-    int arr[j];
+    // 2. 最长单词
+    string longest = "";
+    current = ""; 
+    for (int i = 0; i <= sentence.length(); i++)
+    {
+        if (i == sentence.length() || sentence[i] == ' ')
+        {
+            if (current.length() > longest.length())
+            {
+                longest = current;
+            }
+            current = "";
+        }     
+        else 
+        {
+            current += sentence[i];
+        }
+    }
+    cout << "最长的单词为: " << longest << "，长度: " << longest.length() << endl;
+
+    // 3. 每个单词长度，按序输出
+    // 创建数组存储单词和长度
+    string words[j];
+    int lengths[j];
+    int index = 0;
+    current = "";
     
+    // 提取所有单词
     for (int i = 0; i <= sentence.length(); i++) 
     {
         if (i == sentence.length() || sentence[i] == ' ') 
         {
-            if (current!="") 
+            if (current != "") 
             {
-                for(int m=0;m<j;m++)
-                {
-                    arr[m]=current.length();
-                }
-        
+                words[index] = current;
+                lengths[index] = current.length();
+                index++;
             }
             current = "";
         } 
@@ -71,22 +74,34 @@ int main()
         {
             current += sentence[i];
         }
-        // 按单词长度排序（简单的冒泡排序）
-        for (int i = 0; i < wordCount - 1; i++) 
+    }
+    
+    // 按单词长度排序（冒泡排序）
+    for (int i = 0; i < j - 1; i++) 
+    {
+        for (int k = 0; k < j - 1 - i; k++) 
         {
-            for (int j = 0; j < wordCount - 1 - i; j++) 
-            {
-                if (words[j].length() > words[j + 1].length())
-                {   
-                    // 交换单词位置
-                    string temp = words[j];
-                    words[j] = words[j + 1];
-                    words[j + 1] = temp;
-                }
+            if (lengths[k] > lengths[k + 1])
+            {   
+                // 交换长度
+                int tempLen = lengths[k];
+                lengths[k] = lengths[k + 1];
+                lengths[k + 1] = tempLen;
+                
+                // 交换单词
+                string tempWord = words[k];
+                words[k] = words[k + 1];
+                words[k + 1] = tempWord;
             }
+        }
+    }
+    
+    // 输出排序后的结果
+    cout << "所有单词按长度排序:" << endl;
+    for (int i = 0; i < j; i++) 
+    {
+        cout << words[i] << " - 长度: " << lengths[i] << endl;
     }
 
-
-
+    return 0;
 }
-
